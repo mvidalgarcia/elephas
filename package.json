@@ -4,8 +4,9 @@
   "description": "I search for nice flights for you.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,9 @@
   },
   "homepage": "https://github.com/mvidalgarcia/elephas#readme",
   "dependencies": {
-    "dotenv": "^9.0.2"
+    "dotenv": "^9.0.2",
+    "next": "^12.1.5",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }
