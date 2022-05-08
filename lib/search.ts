@@ -1,15 +1,17 @@
-const { URL, URLSearchParams } = require("url");
+import { URL, URLSearchParams } from "node:url";
+import dotenv from "dotenv";
+
 import { getNextWeekends } from "./date";
 import { TEQUILA_API_URL } from "./config";
 
-require("dotenv").config();
+dotenv.config();
 
 const weekends = getNextWeekends({ count: 5 });
 
 const API_URL = new URL(TEQUILA_API_URL);
 const TEQUILA_API_KEY: string = String(process.env.TEQUILA_API_KEY);
 // FIXME: Make search function parametrizable
-const params = {
+const params: any = {
   fly_from: "BCN",
   fly_to: "MAD",
   date_from: weekends[0].friday,
@@ -21,29 +23,20 @@ const params = {
   partner: "picky",
   sort: "quality",
   price_from: 0,
-  price_to: 200,
+  price_to: 300,
   curr: "EUR",
   max_stopovers: 0,
 };
 
 export function search() {
   let url = API_URL;
-  url.search = new URLSearchParams(params);
-  url = url.href;
-  console.log(url);
+  url.search = new URLSearchParams(params).toString();
+  const urlStr = url.href;
 
-  fetch(url, { headers: { apikey: TEQUILA_API_KEY } })
+  return fetch(urlStr, { headers: { apikey: TEQUILA_API_KEY } })
     .then((res) => {
-      res
-        .json()
-        .then((data) => {
-          // FIXME: fix
-          console.log(data.data.map((elem: any) => elem.deep_link));
-          console.log(data?.data?.length);
-        })
-        .catch((err) => console.log(err));
+      // FIXME: Filter our props from the response
+      return res.json();
     })
     .catch((err) => console.log(err));
 }
-
-search();
