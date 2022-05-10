@@ -1,5 +1,6 @@
 import { search } from "../lib/search";
-import FlightListItem, { FlightListProps } from "../components/FlightListItem";
+import { USER_SEARCH_PARAMS } from "../lib/config";
+import FlightList from "../components/FlightList";
 
 type HeaderProps = {
   title: string;
@@ -13,18 +14,12 @@ export default function App({ data }: { data: Array<any> }) {
   return (
     <div>
       <Header title="Elephas 🐘" />
-      <ul>
-        {data.map((props: FlightListProps) => (
-          <li key={props.id}>
-            <FlightListItem {...props} />
-          </li>
-        ))}
-      </ul>
+      <FlightList data={data} />
     </div>
   );
 }
 
 export async function getServerSideProps() {
-  const data = await search();
-  return { props: { data: data.data } };
+  const data = await search(USER_SEARCH_PARAMS);
+  return { props: { data } };
 }

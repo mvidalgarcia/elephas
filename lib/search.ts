@@ -2,41 +2,58 @@ import { URL, URLSearchParams } from "node:url";
 import dotenv from "dotenv";
 
 import { getNextWeekends } from "./date";
-import { TEQUILA_API_URL } from "./config";
+import { TEQUILA_API_URL, USER_SEARCH_PARAMS } from "./config";
 
 dotenv.config();
 
-const weekends = getNextWeekends({ count: 5 });
-
-const API_URL = new URL(TEQUILA_API_URL);
 const TEQUILA_API_KEY: string = String(process.env.TEQUILA_API_KEY);
-// FIXME: Make search function parametrizable
-const params: any = {
-  fly_from: "BCN",
-  fly_to: "MAD",
-  date_from: weekends[0].friday,
-  date_to: weekends[0].friday,
-  return_from: weekends[0].sunday,
-  return_to: weekends[0].sunday,
-  dtime_from: "15:00",
-  ret_dtime_from: "16:00",
-  partner: "picky",
-  sort: "quality",
-  price_from: 0,
-  price_to: 300,
-  curr: "EUR",
-  max_stopovers: 0,
+
+type SearchProps = {
+  fly_from: string;
+  fly_to: string;
+  date_from: string;
+  date_to: string;
+  return_from: string;
+  return_to: string;
+  dtime_from: string;
+  ret_dtime_from: string;
+  partner: string;
+  sort: string;
+  price_from: string;
+  price_to: string;
+  curr: string;
+  max_stopovers: string;
 };
 
-export function search() {
-  let url = API_URL;
-  url.search = new URLSearchParams(params).toString();
-  const urlStr = url.href;
+export function search(
+  searchParams: typeof USER_SEARCH_PARAMS,
+  weekendCount: number = 5
+) {
+  const weekends = getNextWeekends({ count: weekendCount });
 
-  return fetch(urlStr, { headers: { apikey: TEQUILA_API_KEY } })
-    .then((res) => {
-      // FIXME: Filter our props from the response
-      return res.json();
+  const urls = weekends.map(({ friday, sunday }) => {
+    const fullSearchParams = {
+      ...searchParams,
+      date_from: friday,
+      date_to: friday,
+      return_from: sunday,
+      return_to: sunday,
+    };
+    const urlObj = new URL(TEQUILA_API_URL);
+    urlObj.search = new URLSearchParams(fullSearchParams).toString();
+    const urlStr = urlObj.href;
+    return urlStr;
+  });
+
+  return Promise.all(
+    urls.map((url) =>
+      fetch(url, { headers: { apikey: TEQUILA_API_KEY } }).then((resp) =>
+        resp.json()
+      )
+    )
+  )
+    .then((data) => {
+      return data;
     })
     .catch((err) => console.log(err));
 }
