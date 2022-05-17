@@ -7,7 +7,9 @@ export type FlightListProps = {
   price: number;
   deep_link: string;
   cityFrom: string;
+  cityCodeFrom: string;
   cityTo: string;
+  cityCodeTo: string;
   route: RouteProps;
 };
 
@@ -21,7 +23,7 @@ export default function FlightList({ data }: { data: Array<any> }) {
   return (
     <>
       {data.map((flightsFromDate) => (
-        <div key={flightsFromDate.search_id}>
+        <div key={flightsFromDate.id}>
           {flightsFromDate.data.length > 0 && (
             <h3>
               {flightsFromDate.data[0].cityFrom} -{" "}
@@ -47,7 +49,9 @@ function FlightListItem({
   price,
   deep_link: deepLink,
   cityFrom,
+  cityCodeFrom,
   cityTo,
+  cityCodeTo,
   route,
 }: FlightListProps) {
   return (
