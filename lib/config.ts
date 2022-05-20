@@ -12,6 +12,8 @@ export const USER_SEARCH_PARAMS: SearchProps = {
   price_to: "200",
   curr: "EUR",
   max_stopovers: "0",
+  ret_from_diff_airport: "0",
+  ret_to_diff_airport: "0",
 };
 
 type SearchProps = {
@@ -25,4 +27,6 @@ type SearchProps = {
   price_to: string;
   curr: string;
   max_stopovers: string;
+  ret_from_diff_airport: string;
+  ret_to_diff_airport: string;
 };
