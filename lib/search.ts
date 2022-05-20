@@ -43,21 +43,18 @@ export function search(
 ) {
   const weekends = getNextWeekends({ count: weekendCount });
 
-  const urls = searchParams.fly_to.flatMap((to) => {
-    return weekends.map(({ friday, sunday }) => {
-      const fullSearchParams = {
-        ...searchParams,
-        date_from: friday,
-        date_to: friday,
-        return_from: sunday,
-        return_to: sunday,
-        fly_to: to,
-      };
-      const urlObj = new URL(TEQUILA_API_URL);
-      urlObj.search = new URLSearchParams(fullSearchParams).toString();
-      const urlStr = urlObj.href;
-      return urlStr;
-    });
+  const urls = weekends.map(({ friday, sunday }) => {
+    const fullSearchParams = {
+      ...searchParams,
+      date_from: friday,
+      date_to: friday,
+      return_from: sunday,
+      return_to: sunday,
+    };
+    const urlObj = new URL(TEQUILA_API_URL);
+    urlObj.search = new URLSearchParams(fullSearchParams).toString();
+    const urlStr = urlObj.href;
+    return urlStr;
   });
 
   return Promise.all(
