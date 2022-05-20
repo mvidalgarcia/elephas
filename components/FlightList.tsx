@@ -10,6 +10,7 @@ export type FlightListProps = {
   cityCodeFrom: string;
   cityTo: string;
   cityCodeTo: string;
+  currency: string;
   route: RouteProps;
 };
 
@@ -34,7 +35,10 @@ export default function FlightList({ data }: { data: Array<any> }) {
           <ul>
             {flightsFromDate.data.map((props: FlightListProps) => (
               <li key={props.id}>
-                <FlightListItem {...props} />
+                <FlightListItem
+                  {...props}
+                  currency={flightsFromDate.currency}
+                />
               </li>
             ))}
           </ul>
@@ -52,6 +56,7 @@ function FlightListItem({
   cityCodeFrom,
   cityTo,
   cityCodeTo,
+  currency,
   route,
 }: FlightListProps) {
   return (
@@ -63,7 +68,9 @@ function FlightListItem({
       <a href={deepLink} target="_blank" rel="noopener noreferrer">
         link
       </a>
-      <span>{price}EUR</span>
+      <span>
+        {price} {currency}
+      </span>
     </>
   );
 }
