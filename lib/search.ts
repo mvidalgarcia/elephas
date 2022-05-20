@@ -1,7 +1,8 @@
 import { URL, URLSearchParams } from "node:url";
 import dotenv from "dotenv";
 
-import { getNextWeekends } from "./date";
+import { getNextWeekends, formatDate } from "./date";
+
 import { pick } from "./util";
 import { TEQUILA_API_URL, USER_SEARCH_PARAMS } from "./config";
 
@@ -24,15 +25,26 @@ function serializeFlightData(rootData: any) {
         "deep_link",
         "route",
       ];
+      const keepRoute = ["id", "local_arrival", "local_departure"];
       const filteredData = el.data.map((flight: any) => {
         const filtered = pick(flight, keep);
-        const keepRoute = ["id", "local_arrival", "local_departure"];
         filtered.route = filtered.route.map((routeItem: any) =>
           pick(routeItem, keepRoute)
         );
         return filtered;
       });
-      return { id: el.search_id, currency: el.currency, data: filteredData };
+      // Inject date range at the top level of the flight data from a specific date
+      const [from, to] = filteredData[0].route;
+      const dateRange = `${formatDate(from.local_departure)} - ${formatDate(
+        to.local_departure
+      )}`;
+
+      return {
+        id: el.search_id,
+        currency: el.currency,
+        data: filteredData,
+        dateRange,
+      };
     });
   return filteredRootData;
 }

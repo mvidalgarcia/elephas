@@ -26,11 +26,7 @@ export default function FlightList({ data }: { data: Array<any> }) {
       {data.map((flightsFromDate) => (
         <div key={flightsFromDate.id}>
           {flightsFromDate.data.length > 0 && (
-            <h3>
-              {flightsFromDate.data[0].cityFrom} -{" "}
-              {flightsFromDate.data[0].cityTo}
-              <DateRange route={flightsFromDate.data[0]?.route ?? null} />
-            </h3>
+            <h3>{flightsFromDate.dateRange}</h3>
           )}
           <ul>
             {flightsFromDate.data.map((props: FlightListProps) => (
